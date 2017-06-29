@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SEEKAdCheckout.Domain.DB;
+using Microsoft.EntityFrameworkCore;
 
 namespace SEEKAdCheckout.Web
 {
@@ -27,7 +29,9 @@ namespace SEEKAdCheckout.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<SEEKAdContext>(opt => opt.UseInMemoryDatabase());
             // Add framework services.
+            services.AddRouting();
             services.AddMvc();
         }
 
@@ -37,7 +41,16 @@ namespace SEEKAdCheckout.Web
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseMvc();
+            var context = app.ApplicationServices.GetService<SEEKAdContext>();
+            InitialSeed.Up(context);
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { controller = "Default", action = "Index" }
+                );
+            });
         }
     }
 }
