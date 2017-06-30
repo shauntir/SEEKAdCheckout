@@ -41,6 +41,8 @@ namespace SEEKAdCheckout.Web
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            app.UseStaticFiles();
+
             var context = app.ApplicationServices.GetService<SEEKAdContext>();
             InitialSeed.Up(context);
             app.UseMvc(routes =>

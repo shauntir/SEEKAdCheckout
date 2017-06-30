@@ -22,8 +22,7 @@ namespace SEEKAdCheckout.Web.Controllers
         // GET: default
         public async Task<IActionResult> Index()
         {
-            return Content("FOO");
-            //return View(await _context.Checkouts.ToListAsync());
+            return View();
         }
     }
 }
